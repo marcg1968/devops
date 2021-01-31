@@ -4,7 +4,10 @@
 #
 # URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
 # wget -qO - "$URL" | bash
+# OR
+# curl -s "$URL" | bash
 #
+URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
 
 os_check() {
     detected_os=$(grep "\bID\b" /etc/os-release | cut -d '=' -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
@@ -14,9 +17,28 @@ os_check() {
     return 0
 }
 
+main() {
+    if [ "$(id -u)" -eq 0 ]; then
+        # user is root and good to go
+	echo "User has root privilege"
+    else
+    	# assume sudo command exists
+	
+	# when running via curl piping
+	if [[ "$0" == "bash" ]]; then
+            # download script and run with root rights
+	    exec curl -sSL "$URL" | sudo bash "$@"
+        else
+	    # when running by calling local bash script
+            exec sudo bash "$0" "$@"
+	fi
+    fi
+	
+}
+
 os_check && echo "OS detected: ${detected_os_like} ${detected_os_like} - will proceed" || { echo "Needs to be Ubuntu"; exit 1; }
 
-[ $(id -u) == "0" ] || { echo "Need to run script as root"; exit 1; }
+main
 
 
 exit 0
