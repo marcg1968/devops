@@ -2,7 +2,7 @@
 
 # run as root
 #
-# URL="https://www.dropbox.com/s/sgwpa3mez110965/common_setup_desktop.sh?dl=1"
+# URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
 # wget -qO - "$URL" | bash
 #
 
