@@ -3,7 +3,7 @@
 # run as root
 #
 # URL="https://www.dropbox.com/s/sgwpa3mez110965/common_setup_desktop.sh?dl=1"
-# wget -O - "$URL" | bash
+# wget -qO - "$URL" | bash
 #
 
 os_check() {
@@ -14,7 +14,10 @@ os_check() {
     return 0
 }
 
-os_check || { echo "Needs to be Ubuntu"; exit 1; }
+os_check && echo "OS detected: ${detected_os_like} ${detected_os_like} - will proceed" || { echo "Needs to be Ubuntu"; exit 1; }
+
+[ $(id -u) == "0" ] || { echo "Need to run script as root"; exit 1; }
+
 
 exit 0
 
