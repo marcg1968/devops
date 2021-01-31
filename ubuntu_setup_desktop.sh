@@ -40,6 +40,7 @@ os_check && echo "OS detected: ${detected_os_like} ${detected_os_like} - will pr
 
 main
 
+echo "Yay! we can proceed!!"
 
 exit 0
 
