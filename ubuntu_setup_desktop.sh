@@ -53,10 +53,11 @@ while [ -z "$USR" ]; do
 	# prompt for user input - NB </dev/tty
 	read -p "Enter the main user (not root): "  username </dev/tty
 	username="$(echo $username | tr -d '[:space:]')"
-	[ -z "$username" ] && echo must be non-zero
-	#id -u "$username" 2>/dev/null && echo "$username already exists (id="$(id -u)")" || USR="$username"	
-	id -u "$username" 2>/dev/null && { echo "$username already exists (id="$(id -u)")"; continue; }
-	[ -z "$username" ] && { echo "try again ..."; continue; }
+	[ -z "$username" ] && { echo must be non-zero; continue; }
+	
+	#id -u "$username" 2>/dev/null && { echo "NOTE: $username already exists (id="$(id -u)")"; continue; }
+	id -u "$username" 2>/dev/null && { echo "NOTE: $username already exists (id="$(id -u)")"; }
+	#[ -z "$username" ] && { echo "try again ..."; continue; }
 	USR="$username"
 done
 
@@ -70,11 +71,6 @@ fi
 # check user $USR exists, if not, try to create using std p
 if ! id "$USR" >/dev/null 2>&1; then
     useradd -m -p $STD_P -s /bin/bash "$USR" || exit 4
-fi
-
-# check newly created user exists, exiting if not
-if ! id "$USR" >/dev/null 2>&1; then
-	exit 4
 fi
 
 # user environment
@@ -110,8 +106,22 @@ if [[ ! -d $FP_LOGS ]]; then
 	fi
 fi
 
-# std apt packages
+# apt packages
 
+# install postfix
+POSTFIX_HOSTNAME=""
+while [ -z "$POSTFIX_HOSTNAME" ]; do
+	# prompt for user input - NB </dev/tty
+	read -p "Enter the postfix hostname: "  username </dev/tty
+	name="$(echo $name | tr -d '[:space:]')"
+	[ -z "$name" ] && { echo must be non-zero; continue; }
+	POSTFIX_HOSTNAME="$name"
+fi
+echo "postfix postfix/mailname string $POSTFIX_HOSTNAME" | debconf-set-selections
+echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
+apt install -y postfix
+
+# std apt packages
 read -r -d '' LIST <<'EOF'
 anacron
 apt-utils
@@ -153,6 +163,8 @@ vim
 wget
 whiptail
 whois
+x11vnc
+xtightvncviewer
 EOF
 readarray -t pkg <<<"${LIST}"
 
@@ -179,13 +191,21 @@ pkg="keepassx"
 if dpkg --get-selections | grep -q "^${pkg}[[:space:]]*install$" >/dev/null; then
 	echo "$pkg already installed."
 else
-	# cf https://askubuntu.com/a/51859
-	URL="http://security.ubuntu.com/ubuntu/pool/universe/k/keepassx/keepassx_0.4.3+dfsg-0.1ubuntu1_amd64.deb"
-	TEMP_DEB="$(mktemp)" && wget -O "$TEMP_DEB" "$URL" && dpkg -i "$TEMP_DEB"
-	rm -f "$TEMP_DEB"
+	## cf https://askubuntu.com/a/51859
+	#URL="http://security.ubuntu.com/ubuntu/pool/universe/k/keepassx/keepassx_0.4.3+dfsg-0.1ubuntu1_amd64.deb"
+	#TEMP_DEB="$(mktemp)" && wget -O "$TEMP_DEB" "$URL" && dpkg -i "$TEMP_DEB"
+	#rm -f "$TEMP_DEB"
+	## then pin it so is not later updated
+	#echo "keepassx hold" | sudo dpkg --set-selections
+	
+	# cf https://ubuntuhandbook.org/index.php/2020/07/how-to-install-keepassxc-2-6-0-in-ubuntu-20-04-lts/
+	sudo add-apt-repository ppa:phoerious/keepassxc -y
+	sudo apt update && sudo apt install -y keepassxc
 	# then pin it so is not later updated
-	echo "keepassx hold" | sudo dpkg --set-selections
+	echo "keepassxc hold" | sudo dpkg --set-selections
 fi
+
+sudo apt update && sudo apt upgrade -y
 
 # put /etc under version control
 
