@@ -6,6 +6,7 @@
 # wget -qO - "$URL" | bash
 # OR
 # curl -s "$URL" | bash
+# curl -s "${URL}?v="`date +%s` | bash
 #
 URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
 
@@ -23,6 +24,7 @@ main() {
 	echo "User has root privilege"
     else
     	# assume sudo command exists
+	echo "User "$(id -u)" does NOT have root privilege ..."
 	
 	# when running via curl piping
 	if [[ "$0" == "bash" ]]; then
@@ -32,6 +34,9 @@ main() {
 	    # when running by calling local bash script
             exec sudo bash "$0" "$@"
 	fi
+	
+	echo "Now exiting ..."
+	exit $?
     fi
 	
 }
@@ -41,6 +46,9 @@ os_check && echo "OS detected: ${detected_os_like} ${detected_os_like} - will pr
 main
 
 echo "Yay! we can proceed!!"
+
+read -p "Enter the main user (not root): "  username
+echo "Welcome $username!"
 
 exit 0
 
