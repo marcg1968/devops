@@ -151,6 +151,7 @@ net-tools
 netcat
 nmap
 npm
+openssh-server
 pv
 rename
 redis
