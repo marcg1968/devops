@@ -24,7 +24,7 @@ main() {
 	echo "User has root privilege"
     else
     	# assume sudo command exists
-	echo "User "$(id -u)" does NOT have root privilege ..."
+	echo "User "$(id -un)"(id="$(id -u)") does NOT have root privilege ..."
 	
 	# when running via curl piping
 	if [[ "$0" == "bash" ]]; then
@@ -35,7 +35,7 @@ main() {
             exec sudo bash "$0" "$@"
 	fi
 	
-	echo "Now exiting ..."
+	# Now exiting
 	exit $?
     fi
 	
