@@ -6,6 +6,18 @@
 # wget -O - "$URL" | bash
 #
 
+os_check() {
+    detected_os=$(grep "\bID\b" /etc/os-release | cut -d '=' -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+    detected_os_like=$(grep "\bID_LIKE\b" /etc/os-release | cut -d '=' -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+    #detected_version=$(grep VERSION_ID /etc/os-release | cut -d '=' -f2 | tr -d '"')
+    [[ "$detected_os" == "ubuntu" || "$detected_os_like" == "ubuntu" ]] || return 1
+    return 0
+}
+
+os_check || { echo "Needs to be Ubuntu"; exit 1; }
+
+exit 0
+
 [ $(id -u) == "0" ] || { echo "Need to run script as root"; exit 1; }
 
 USR="marc"
