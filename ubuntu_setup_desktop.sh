@@ -112,7 +112,7 @@ fi
 POSTFIX_HOSTNAME=""
 while [ -z "$POSTFIX_HOSTNAME" ]; do
 	# prompt for user input - NB </dev/tty
-	read -p "Enter the postfix hostname: "  username </dev/tty
+	read -p "Enter the postfix hostname: " name </dev/tty
 	name="$(echo $name | tr -d '[:space:]')"
 	[ -z "$name" ] && { echo must be non-zero; continue; }
 	POSTFIX_HOSTNAME="$name"
