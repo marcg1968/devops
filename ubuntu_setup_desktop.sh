@@ -116,7 +116,7 @@ while [ -z "$POSTFIX_HOSTNAME" ]; do
 	name="$(echo $name | tr -d '[:space:]')"
 	[ -z "$name" ] && { echo must be non-zero; continue; }
 	POSTFIX_HOSTNAME="$name"
-fi
+done
 echo "postfix postfix/mailname string $POSTFIX_HOSTNAME" | debconf-set-selections
 echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
 apt install -y postfix
