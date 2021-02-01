@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-# script to run as root user
-# sets up common base config
+# script to set up my favourite common base configuration for an Ubuntu system
+# last tested for Linux Mint 20.1 (based on Ubuntu 20.04)
+#
 URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
-# run by entering
+# run the script by entering
 # wget -qO - "$URL" | bash
 # OR
 # curl -s "$URL" | bash
