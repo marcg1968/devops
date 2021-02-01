@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# run as root
-#
-# URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
+# script to run as root user
+# sets up common base config
+URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
+# run by entering
 # wget -qO - "$URL" | bash
 # OR
 # curl -s "$URL" | bash
-# curl -s "${URL}?v="`date +%s` | bash
 #
-URL="https://raw.githubusercontent.com/marcg1968/devops/dev/ubuntu_setup_desktop.sh"
+
 STD_P='$6$MHykSRTZR$pMzhgfXfi.teazwqqvnKoM.OGavCukKDN6q8Im32FyfyNBJ.yE9v9gbE0OEho599eyjLl.RBfErcZzZBPrvxE1'
 
 os_check() {
