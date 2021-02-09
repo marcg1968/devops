@@ -3,7 +3,7 @@
 # script to set up my favourite common base configuration for an Ubuntu system
 # last tested for Linux Mint 20.1 (based on Ubuntu 20.04)
 #
-URL="https://raw.githubusercontent.com/marcg1968/devops/main/ubuntu_setup_desktop.sh"
+URL="https://raw.githubusercontent.com/marcg1968/devops/master/ubuntu_setup_desktop.sh"
 # run the script by entering
 # wget -qO - "$URL" | bash
 # OR
