@@ -169,7 +169,7 @@ cd .. && echo "Wordpress unpacked to dir $DIR ." || exit 128
 
 ## fi # TEMP
 
-echo -n "Now setting permissions (could take a while) ... "
+echo -n "Now setting permissions on directory $DIR (could take a while) ... "
 cd $DIR
 #chown www-data:www-data -R * # Let Apache be owner
 chown www-data:www-data -R . # Let Apache be owner
