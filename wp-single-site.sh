@@ -85,12 +85,12 @@ while [ -z "$DOMAIN" ]; do
 	    KNOWN_IP=$(getent hosts $domain | awk '{ print $1 }')
         [[ "$KNOWN_IP" =~ "127"* ]] && KNOWN_IP=""
     fi
-    if which dig >/dev/null && [ -z $KNOWN_IP ] ; then
+    if [ -z "$KNOWN_IP" ] && which dig >/dev/null; then
         KNOWN_IP=$(dig +short $domain)
-    else
-        echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
-        exit 8
     fi
+
+    # echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting."
+
     [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; continue; }
 
     echo KNOWN_IP $KNOWN_IP
