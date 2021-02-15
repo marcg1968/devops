@@ -183,10 +183,6 @@ echo Exit code now: $?
 
 echo -n "Now setting up DB $DBNAME ... "
 echo -n "with USERNAME $U ... "
-echo -e "For DB $DBNAME\nUSER=${U}\nPASSWORD=${P}" >> ~/.wordpress_db_credentials_${DBNAME}
-sudo chown $USR ~/.wordpress_db_credentials_${DBNAME}
-sudo chmod 400 ~/.wordpress_db_credentials_${DBNAME}
-echo "Credentials saved to file ${HOME}/.wordpress_db_credentials_${DBNAME}"
 
 #mysql -uroot -p${MYSQL_ROOT_PW} -e "CREATE DATABASE ${DBNAME};"
 MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "CREATE DATABASE ${DBNAME};"
@@ -200,6 +196,13 @@ MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "FLUSH PRIVILEGES;"
 MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "ALTER DATABASE ${DBNAME} CHARACTER SET utf8 COLLATE utf8_unicode_ci;" # ensure utf8 charset
 
 echo "done."
+echo "+---------------------------------------------------------------------------------------+"
+echo -e "For DB $DBNAME\nUSER=${U}\nPASSWORD=${P}" >> ~/.wordpress_db_credentials_${DBNAME}
+sudo chown $USR ~/.wordpress_db_credentials_${DBNAME}
+sudo chmod 400 ~/.wordpress_db_credentials_${DBNAME}
+echo "   Credentials saved to file ${HOME}/.wordpress_db_credentials_${DBNAME}"
+echo "+---------------------------------------------------------------------------------------+"
+
 
 if mv wp-config-sample.php wp-config.php; then
 	sed -i "s/database_name_here/${DBNAME}/g" wp-config.php
@@ -215,20 +218,6 @@ else
 	echo "Error creating wp-config.php. Exiting."
 	exit 64
 fi
-
-
-
-exit 0
-
-
-
-
-
-
-
-
-
-
 
 ###fi # TEMP
 
@@ -284,3 +273,7 @@ else
 fi
 
 echo "Try accessing new WP site at https://"$DOMAIN
+
+exit 0
+
+
