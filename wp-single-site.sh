@@ -82,7 +82,9 @@ while [ -z "$DOMAIN" ]; do
     KNOWN_IP=""
     if which getent >/dev/null; then
 	    KNOWN_IP=$(getent hosts $DOMAIN | awk '{ print $1 ; exit }')
-    elif which dig >/dev/null; then
+        [[ "$KNOWN_IP" =~ "127"* ]] && KNOWN_IP=""
+    fi
+    if which dig >/dev/null && [ -z $KNOWN_IP ] ; then
         KNOWN_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
     else
         echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
