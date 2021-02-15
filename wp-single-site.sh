@@ -43,8 +43,9 @@ while [ -z "$USR" ]; do
 done
 
 MYSQL_PW_FILE="${USR}/.pw_mysql_root"
+echo ${MYSQL_PW_FILE}
 [ -e "${MYSQL_PW_FILE}" ] || {
-    echo "# Please create a password file\ntouch ${MYSQL_PW_FILE}\nchmod 400 ${MYSQL_PW_FILE}\n# with a single line containing the MySQL root password."
+    echo -e "# Please create a password file\ntouch ${MYSQL_PW_FILE}\nchmod 400 ${MYSQL_PW_FILE}\n# with a single line containing the MySQL root password."
     exit 2;
 }
 
