@@ -70,7 +70,7 @@ echo ${MYSQL_PW_FILE}
     echo ;
     exit 2;
 }
-
+MYSQL_PWD=$(<${MYSQL_PW_FILE})
 
 read -p "Enter email address: "  EMAIL </dev/tty
 
@@ -131,21 +131,29 @@ P="$DBNAME""pw"
 
 echo -n "Now installing Wordpress ... "
 cd ~
-if wget -c http://wordpress.org/latest.tar.gz; then
-	mv latest.tar.gz wordpress__latest.tar.gz 
-else
-	echo -e "Problems downloading tarball. Exiting."
-	exit 128
+
+NOW=`date +%s`
+AGE=""
+TGZ="wordpress__latest.tar.gz"
+# stat -c%Y ~/wordpress__latest.tar.gz
+[ -f "$TGZ" ] && AGE=$(($NOW-`stat -c%Y $TGZ`))
+if [ -z "$AGE" -o "$AGE" -gt "86400" ]; then
+    if wget -c http://wordpress.org/latest.tar.gz; then
+	    mv latest.tar.gz wordpress__latest.tar.gz 
+    else
+	    echo -e "Problems downloading tarball. Exiting."
+    	exit 128
+    fi
 fi
 
 if [ -d "$DIR" ] && find "$DIR" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
 	echo -e "\nDirectory $DIR already exists and is not empty. Exiting."
-	exit 8
+	exit 128
 elif mkdir -p "$DIR"; then
 	echo -e "\nSuccess creating dir $DIR ."
 else
 	echo -e "\nFailed to create directory $DIR. Exiting."
-	exit 256
+	exit 128
 fi
 
 if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
@@ -153,19 +161,9 @@ if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
 		echo "Wordpress unpacked to dir $DIR ."
 	else
 		echo "Problems unpacking Wordpress tarball. Exiting."
-		exit 512
+		exit 128
 	fi
 fi
-
-
-
-
-exit 0
-
-
-
-
-
 
 
 echo -n "Now setting permissions (could take a while) ... "
@@ -178,6 +176,17 @@ find . -type f -exec sudo chmod 644 {} \;  # Change file permissions rw-r--r--
 echo Exit code now: $?
 
 [[ $MYSQL_PWD ]] || { echo "MySQL password variable 'MYSQL_PWD' not set. "; exit 512; }
+
+exit 0
+
+
+
+
+
+
+
+
+
 
 echo -n "Now setting up DB $DBNAME ... "
 echo -n "with USERNAME $U and PW $p ... "
