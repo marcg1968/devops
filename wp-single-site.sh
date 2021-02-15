@@ -47,7 +47,6 @@ checkroot
 
 check
 
-
 USR=""
 while [ -z "$USR" ]; do
     read -p "Enter the main user (not root): " username </dev/tty
@@ -57,7 +56,7 @@ while [ -z "$USR" ]; do
     USR="$username"
 done
 
-echo $USR
+echo "Welcome, "$USR
 MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
 #echo ${MYSQL_PW_FILE}
 
