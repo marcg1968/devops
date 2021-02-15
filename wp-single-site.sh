@@ -124,8 +124,9 @@ echo "Good to go - this host's IP, $IP matches the domain name resolution $KNOWN
 
 DIR="/var/www/html/$DOMAIN"
 DBNAME=$(echo ${DOMAIN%%.*} | tr -d -c '[[:alnum:]]')
-U=$DBNAME
-P="$DBNAME""pw"
+U=$DBNAME"_"$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1)
+#P="$DBNAME""pw"
+P=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
 
 ## Doing install
 
@@ -181,7 +182,11 @@ echo Exit code now: $?
 [[ $MYSQL_PWD ]] || { echo "MySQL password variable 'MYSQL_PWD' not set. "; exit 512; }
 
 echo -n "Now setting up DB $DBNAME ... "
-echo -n "with USERNAME $U and PW $p ... "
+echo -n "with USERNAME $U ... "
+echo -e "For DB $DBNAME\nUSER=${U}\nPASSWORD=${P}" >> ~/.wordpress_db_credentials_${DBNAME}
+sudo chown $USR ~/.wordpress_db_credentials_${DBNAME}
+sudo chmod 400 ~/.wordpress_db_credentials_${DBNAME}
+echo "Credentials saved to file ${HOME}/.wordpress_db_credentials_${DBNAME}"
 
 #mysql -uroot -p${MYSQL_ROOT_PW} -e "CREATE DATABASE ${DBNAME};"
 MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "CREATE DATABASE ${DBNAME};"
