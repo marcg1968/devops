@@ -35,7 +35,7 @@ checkroot
 
 USR=""
 while [ -z "$USR" ]; do
-    read -p "Enter the main user (not root): "  username </dev/tty
+    read -p "Enter the main user (not root): " username </dev/tty
     username="$(echo $username | tr -d '[:space:]')"
 	[ -z "$username" ] && { echo must be non-zero; continue; }
 
@@ -63,7 +63,7 @@ APACHE_LOG_DIR="/var/log/apache2"
 [ -d $APACHE_LOG_DIR ] || APACHE_LOG_DIR=""
 
 while [ -z $APACHE_LOG_DIR ]; do
-    read -p "Enter full path to Apache log directory: "  apache_log </dev/tty
+    read -p "Enter full path to Apache log directory: " apache_log </dev/tty
     apache_log="$(echo $apache_log | tr -d '[:space:]')"
     #[ -z "$apache_log" -o ! -d "$apache_log" ] && { echo "invalid entry"; continue; }
     [ -z "$apache_log" ] && { echo "Invalid entry"; continue; }
@@ -72,16 +72,20 @@ while [ -z $APACHE_LOG_DIR ]; do
     APACHE_LOG_DIR="$apache_log"
 done
 
+DOMAIN=""
+while [ -z "$DOMAIN" ]; do
+    read -p "Enter domain: " domain </dev/tty
+    domain="$(echo $domain | tr -d '[:space:]')"
+	[ -z "$domain" ] && { echo must be of non-zero length; continue; }
+    echo "Using domain '"$domain"'"
+    DOMAIN="$domain"
+done
 
 
 
 exit 0
 
 
-
-MYSQL_PW_FILE="/home/marc/.pw_mysql_root"
-APACHE_LOG_DIR="/var/log/apache2"
-EMAIL="mgreyling@gmail.com"
 
 [ $(id -u) == "0" ] || { echo "Need to run script as root"; exit 1; }
 
