@@ -81,32 +81,13 @@ while [ -z "$DOMAIN" ]; do
     DOMAIN="$domain"
 done
 
-
-
-exit 0
-
-
-
-[ $(id -u) == "0" ] || { echo "Need to run script as root"; exit 1; }
-
-(( $# < 1 )) && { echo "Domain as arg1 missing!"; exit 1; } || { echo "Domain: ""$1"; DOMAIN="$1"; }
-
 DIR="/var/www/html/$DOMAIN"
 DBNAME=$(echo ${DOMAIN%%.*} | tr -d -c '[[:alnum:]]')
 U=$DBNAME
 P="$DBNAME""pw"
 
-#read -s -p "Domain:" DOMAIN
-
-#IP=$(hostname -I | awk '{print $1}')
 for i in `hostname -I`; do [[ $i =~ "127"* || $i =~ "::"* ]] && continue || { IP="$i"; break; }; done
 echo "IP: $IP"
-
-#ping -c1 "$DOMAIN" 2>/dev/null || echo uh oh
-#RESOLVED=$(ping -c1 "$DOMAIN" 2>/dev/null); echo $?
-#echo $RESOLVED | awk '{print $2}'
-
-## Initial checks
 
 echo -n "Checking if domain $DOMAIN resolves to this host's IP $IP ..."
 _IP=""
@@ -127,14 +108,15 @@ else
 	echo "Does the DNS entry for $DOMAIN exist?"
 fi
 
-#.pw_mysql_root
-if [[ ! -f "$MYSQL_PW_FILE" ]]; then
-	echo "Make sure a file $MYSQL_PW_FILE exists, containing the MySQL root password and with perms 400."
-	exit 64
-else
-	#MYSQL_ROOT_PW="$(cat $MYSQL_PW_FILE | xargs)"
-	MYSQL_PWD="$(cat $MYSQL_PW_FILE | xargs)"
-fi
+
+
+exit 0
+
+
+
+
+
+
 
 ## Doing install
 
