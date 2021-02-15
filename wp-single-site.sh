@@ -43,7 +43,7 @@ while [ -z "$USR" ]; do
 done
 
 echo $USR
-MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
+MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root___"
 echo ${MYSQL_PW_FILE}
 
 [ -e "${MYSQL_PW_FILE}" ] || {
