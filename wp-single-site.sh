@@ -42,8 +42,10 @@ while [ -z "$USR" ]; do
     USR="$username"
 done
 
-MYSQL_PW_FILE="/home/${USR}/.pw_mysql_root"
-echo "${MYSQL_PW_FILE}"
+echo $USR
+MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
+echo ${MYSQL_PW_FILE}
+
 [ -e "${MYSQL_PW_FILE}" ] || {
     echo ;
     echo "# Please create a password file as follows:";
