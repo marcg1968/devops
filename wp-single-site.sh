@@ -77,6 +77,20 @@ while [ -z "$DOMAIN" ]; do
     read -p "Enter domain: " domain </dev/tty
     domain="$(echo $domain | tr -d '[:space:]')"
 	[ -z "$domain" ] && { echo must be of non-zero length; continue; }
+
+    # checking IP domain name resolution
+    KNOWN_IP=""
+    if which getent >/dev/null; then
+	    KNOWN_IP=$(getent hosts $DOMAIN | awk '{ print $1 ; exit }')
+    elif which dig >/dev/null; then
+        KNOWN_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
+    else
+        echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
+        exit 8
+    fi
+    [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; exit 16; }
+
+
     echo "Using domain '"$domain"'"
     DOMAIN="$domain"
 done
@@ -89,17 +103,6 @@ P="$DBNAME""pw"
 #for i in `hostname -I`; do [[ $i =~ "127"* || $i =~ "::"* ]] && continue || { IP="$i"; break; }; done
 #echo "IP: $IP"
 
-# checking IP domain name resolution
-KNOWN_IP=""
-if which getent >/dev/null; then
-	KNOWN_IP=$(getent hosts $DOMAIN | awk '{ print $1 ; exit }')
-elif which dig >/dev/null; then
-    KNOWN_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
-else
-    echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
-    exit 8
-fi
-[ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined."; exit 16; }
 
 for i in `hostname -I`; do 
     [[ $i =~ "127"* || $i =~ "::"* ]] && continue
