@@ -158,26 +158,14 @@ else
 	exit 128
 fi
 
-
-
-
-
-exit 0
-
-
-
-
-
-
-
-if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
-	if cd wordpress/ && mv * .. && cd .. && rmdir wordpress && cd .. ; then
-		echo "Wordpress unpacked to dir $DIR ."
-	else
-		echo "Problems unpacking Wordpress tarball. Exiting."
-		exit 128
-	fi
-fi
+#if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
+cd "$DIR" || exit 128
+tar zxf ~/wordpress__latest.tar.gz && echo "Wordpress unpacked" || { echo "Problems unpacking Wordpress tarball. Exiting."; exit 128; }
+cd wordpress/ || exit 128
+mv * .. || exit 128
+cd .. || exit 128
+rmdir wordpress || exit 128
+cd .. && echo "Wordpress unpacked to dir $DIR ." || exit 128
 
 ## fi # TEMP
 
