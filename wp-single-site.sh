@@ -119,43 +119,44 @@ for i in `hostname -I`; do
     [ "$i" = "$KNOWN_IP" ] && IP="$i"
 done
 
-[ -z "$IP" ] && { echo "No external IP matches IP of the domain. Exiting."; exit 64; }
-
-
-
-
-
-
-
+[ -z "$IP" ] && { echo "No external IP matches the IP ($KNOWN_IP) of the domain. Exiting."; exit 64; }
+echo "Good to go - this host's IP, $IP matches the domain name resolution $KNOWN_IP"
 
 DIR="/var/www/html/$DOMAIN"
 DBNAME=$(echo ${DOMAIN%%.*} | tr -d -c '[[:alnum:]]')
 U=$DBNAME
 P="$DBNAME""pw"
 
-#for i in `hostname -I`; do [[ $i =~ "127"* || $i =~ "::"* ]] && continue || { IP="$i"; break; }; done
-#echo "IP: $IP"
+## Doing install
 
-
-
-echo -n "Checking if domain $DOMAIN resolves to this host's IP $IP ..."
-_IP=""
-if which getent >/dev/null; then
-	_IP=$(getent hosts $DOMAIN | awk '{ print $1 ; exit }')
-elif which dig >/dev/null; then
-	_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
+echo -n "Now installing Wordpress ... "
+cd ~
+if wget -c http://wordpress.org/latest.tar.gz; then
+	mv latest.tar.gz wordpress__latest.tar.gz 
 else
-	echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
-	exit 2
+	echo -e "Problems downloading tarball. Exiting."
+	exit 128
 fi
 
-echo ""
-if [[ ! -z _$IP && "$_IP" == "$IP" ]]; then
-	echo "Good to go - this host's IP, $IP matches the domain name resolution $_IP"
+if [ -d "$DIR" ] && find "$DIR" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+	echo -e "\nDirectory $DIR already exists and is not empty. Exiting."
+	exit 8
+elif mkdir -p "$DIR"; then
+	echo -e "\nSuccess creating dir $DIR ."
 else
-	echo "Uh oh! This host's IP, $IP does not match the domain name resolution ${_IP}."
-	echo "Does the DNS entry for $DOMAIN exist?"
+	echo -e "\nFailed to create directory $DIR. Exiting."
+	exit 256
 fi
+
+if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
+	if cd wordpress/ && mv * .. && cd .. && rmdir wordpress && cd .. ; then
+		echo "Wordpress unpacked to dir $DIR ."
+	else
+		echo "Problems unpacking Wordpress tarball. Exiting."
+		exit 512
+	fi
+fi
+
 
 
 
@@ -166,38 +167,6 @@ exit 0
 
 
 
-
-## Doing install
-
-###if false; then # TEMP
-
-echo -n "Now installing Wordpress ... "
-cd ~
-if wget -c http://wordpress.org/latest.tar.gz; then
-	mv latest.tar.gz wordpress__latest.tar.gz 
-else
-	echo -e "Problems downloading tarball. Exiting."
-	exit 4
-fi
-
-if [ -d "$DIR" ] && find "$DIR" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
-	echo -e "\nDirectory $DIR already exists and is not empty. Exiting."
-	exit 8
-elif mkdir -p "$DIR"; then
-	echo -e "\nSuccess creating dir $DIR ."
-else
-	echo -e "\nFailed to create directory $DIR. Exiting."
-	exit 16
-fi
-
-if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
-	if cd wordpress/ && mv * .. && cd .. && rmdir wordpress && cd .. ; then
-		echo "Wordpress unpacked to dir $DIR ."
-	else
-		echo "Problems unpacking Wordpress tarball. Exiting."
-		exit 32
-	fi
-fi
 
 echo -n "Now setting permissions (could take a while) ... "
 cd $DIR
