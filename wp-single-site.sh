@@ -139,7 +139,7 @@ AGE=""
 TGZ="wordpress__latest.tar.gz"
 # stat -c%Y ~/wordpress__latest.tar.gz
 [ -f "$TGZ" ] && AGE=$(($NOW-`stat -c%Y $TGZ`))
-if [ -z "$AGE" -o "$AGE" -gt "86400" ]; then
+if [[ -z "$AGE" || "$AGE" > "86400" ]]; then
     if wget -c http://wordpress.org/latest.tar.gz; then
 	    mv latest.tar.gz wordpress__latest.tar.gz 
     else
