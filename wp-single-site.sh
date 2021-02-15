@@ -132,6 +132,8 @@ P="$DBNAME""pw"
 echo -n "Now installing Wordpress ... "
 cd ~
 
+if false; then # TEMP
+
 NOW=`date +%s`
 AGE=""
 TGZ="wordpress__latest.tar.gz"
@@ -175,18 +177,9 @@ find . -type f -exec sudo chmod 644 {} \;  # Change file permissions rw-r--r--
 
 echo Exit code now: $?
 
+fi # TEMP
+
 [[ $MYSQL_PWD ]] || { echo "MySQL password variable 'MYSQL_PWD' not set. "; exit 512; }
-
-exit 0
-
-
-
-
-
-
-
-
-
 
 echo -n "Now setting up DB $DBNAME ... "
 echo -n "with USERNAME $U and PW $p ... "
@@ -218,6 +211,20 @@ else
 	echo "Error creating wp-config.php. Exiting."
 	exit 64
 fi
+
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
 
 ###fi # TEMP
 
