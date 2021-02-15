@@ -90,7 +90,7 @@ while [ -z "$DOMAIN" ]; do
     fi
     [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; exit 16; }
 
-
+    echo KNOWN_IP $KNOWN_IP
     echo "Using domain '"$domain"'"
     DOMAIN="$domain"
 done
