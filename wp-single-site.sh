@@ -1,6 +1,47 @@
 #!/usr/bin/env bash
 
-#MYSQL_PW_FILE="~/.pw_mysql_root"
+# Script to set up a single Wordpress installation based on specified domain
+#
+URL="https://github.com/marcg1968/devops/blob/master/wp-single-site.sh"
+URL="https://github.com/marcg1968/devops/blob/dev-01/wp-single-site.sh"
+# run the script by entering
+# curl -s "$URL" | bash
+# OR
+# wget -qO - "$URL" | bash
+
+main() {
+    if [ "$(id -u)" -eq 0 ]; then
+        # user is root and good to go
+	echo "User has root privilege"
+    else
+    	# assume sudo command exists
+	echo "User "$(id -un)" (id="$(id -u)") does NOT have root privilege ..."
+	
+	# when running via curl piping
+	if [[ "$0" == "bash" ]]; then
+            # download script and run with root rights
+	    exec curl -sSL "$URL" | sudo bash "$@"
+        else
+	    # when running by calling local bash script
+            exec sudo bash "$0" "$@"
+	fi
+	
+	# Now exiting
+	exit $?
+    fi	
+}
+
+main
+
+
+read -p "Enter the main user (not root): "  username </dev/tty
+
+
+
+exit 0
+
+
+
 MYSQL_PW_FILE="/home/marc/.pw_mysql_root"
 APACHE_LOG_DIR="/var/log/apache2"
 EMAIL="mgreyling@gmail.com"
