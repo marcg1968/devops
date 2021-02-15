@@ -132,7 +132,7 @@ P=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
 echo -n "Now installing Wordpress ... "
 cd ~
 
-if false; then # TEMP
+## if false; then # TEMP
 
 NOW=`date +%s`
 AGE=""
@@ -167,7 +167,7 @@ if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
 	fi
 fi
 
-fi # TEMP
+## fi # TEMP
 
 echo -n "Now setting permissions (could take a while) ... "
 cd $DIR
