@@ -65,7 +65,9 @@ APACHE_LOG_DIR="/var/log/apache2"
 while [ -z $APACHE_LOG_DIR ]; do
     read -p "Enter full path to Apache log directory: "  apache_log </dev/tty
     apache_log="$(echo $apache_log | tr -d '[:space:]')"
-    [ -z "$apache_log" -o ! -d "$apache_log" ] && { echo "invalid entry"; continue; }
+    #[ -z "$apache_log" -o ! -d "$apache_log" ] && { echo "invalid entry"; continue; }
+    [ -z "$apache_log" ] && { echo "Invalid entry"; continue; }
+    [ -d "$apache_log" ] || { echo "Directory does not exist"; continue; }
     APACHE_LOG_DIR="$apache_log"
 done
 
