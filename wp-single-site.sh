@@ -77,15 +77,16 @@ while [ -z "$DOMAIN" ]; do
     read -p "Enter domain: " domain </dev/tty
     domain="$(echo $domain | tr -d '[:space:]')"
 	[ -z "$domain" ] && { echo must be of non-zero length; continue; }
+    
 
     # checking IP domain name resolution
     KNOWN_IP=""
     if which getent >/dev/null; then
-	    KNOWN_IP=$(getent hosts $DOMAIN | awk '{ print $1 }')
+	    KNOWN_IP=$(getent hosts $domain | awk '{ print $1 }')
         [[ "$KNOWN_IP" =~ "127"* ]] && KNOWN_IP=""
     fi
     if which dig >/dev/null && [ -z $KNOWN_IP ] ; then
-        KNOWN_IP=$(dig +short $DOMAIN)
+        KNOWN_IP=$(dig +short $domain)
     else
         echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
         exit 8
