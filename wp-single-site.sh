@@ -31,6 +31,16 @@ checkroot() {
     fi	
 }
 
+check() {
+    local MISSING="1"
+    if which getent >/dev/null; then
+	    MISSING=""
+    elif which dig >/dev/null; then
+        MISSING=""
+    fi
+    [ -z "$MISSING" ] && echo "getent or dig available on system." || { echo "Neither 'dig' nor 'getent' available on this system. Exiting."; exit 32; }
+}
+
 checkroot
 
 USR=""
@@ -78,7 +88,6 @@ while [ -z "$DOMAIN" ]; do
     domain="$(echo $domain | tr -d '[:space:]')"
 	[ -z "$domain" ] && { echo must be of non-zero length; continue; }
     
-
     # checking IP domain name resolution
     KNOWN_IP=""
     if which getent >/dev/null; then
@@ -88,8 +97,6 @@ while [ -z "$DOMAIN" ]; do
     if [ -z "$KNOWN_IP" ] && which dig >/dev/null; then
         KNOWN_IP=$(dig +short $domain)
     fi
-
-    # echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting."
 
     [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; continue; }
 
