@@ -110,6 +110,24 @@ while [ -z "$DOMAIN" ]; do
     DOMAIN="$domain"
 done
 
+IP=""
+# now need to check if KNOWN_IP for DOMAIN matches our external IP
+for i in `hostname -I`; do 
+    [[ $i =~ "127"* || $i =~ "::"* ]] && continue
+    # try this IP
+    echo "External IP determined to be $i ... "
+    [ "$i" = "$KNOWN_IP" ] && IP="$i"
+done
+
+[ -z "$IP" ] && { echo "Mismatch between our external IP and IP of the domain. Exiting."; exit 64; }
+
+
+
+
+
+
+
+
 DIR="/var/www/html/$DOMAIN"
 DBNAME=$(echo ${DOMAIN%%.*} | tr -d -c '[[:alnum:]]')
 U=$DBNAME
@@ -119,13 +137,6 @@ P="$DBNAME""pw"
 #echo "IP: $IP"
 
 
-for i in `hostname -I`; do 
-    [[ $i =~ "127"* || $i =~ "::"* ]] && continue
-    # try this IP
-    [ "$i" = "$KNOWN_IP" ] && IP="$i"
-done
-
-echo "External IP determined to be $IP"
 
 echo -n "Checking if domain $DOMAIN resolves to this host's IP $IP ..."
 _IP=""
@@ -140,7 +151,7 @@ fi
 
 echo ""
 if [[ ! -z _$IP && "$_IP" == "$IP" ]]; then
-	echo "Yay, this host's IP, $IP matches the domain name resolution $_IP"
+	echo "Good to go - this host's IP, $IP matches the domain name resolution $_IP"
 else
 	echo "Uh oh! This host's IP, $IP does not match the domain name resolution ${_IP}."
 	echo "Does the DNS entry for $DOMAIN exist?"
