@@ -45,6 +45,7 @@ checkroot
 
 check
 
+
 USR=""
 while [ -z "$USR" ]; do
     read -p "Enter the main user (not root): " username </dev/tty
