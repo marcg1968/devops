@@ -45,7 +45,12 @@ done
 MYSQL_PW_FILE="/home/${USR}/.pw_mysql_root"
 echo "${MYSQL_PW_FILE}"
 [ -e "${MYSQL_PW_FILE}" ] || {
-    echo -e "# Please create a password file\ntouch ${MYSQL_PW_FILE}\nchmod 400 ${MYSQL_PW_FILE}\n# with a single line containing the MySQL root password.";
+    echo ;
+    echo "# Please create a password file as follows:";
+    echo "touch ${MYSQL_PW_FILE}";
+    echo "chmod 400 ${MYSQL_PW_FILE}";
+    echo "# with a single line containing the MySQL root password.";
+    echo ;
     exit 2;
 }
 
