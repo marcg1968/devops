@@ -38,7 +38,9 @@ check() {
     elif which dig >/dev/null; then
         MISSING=""
     fi
-    [ -z "$MISSING" ] && echo "getent or dig available on system." || { echo "Neither 'dig' nor 'getent' available on this system. Exiting."; exit 32; }
+    [ -z "$MISSING" ] && echo "Check passed: getent or dig available on system." || { 
+        echo "Check failed: neither 'dig' nor 'getent' available on this system. Exiting."; exit 32; 
+    }
 }
 
 checkroot
