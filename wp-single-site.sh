@@ -169,6 +169,7 @@ cd .. && echo "Wordpress unpacked to dir $DIR ." || exit 128
 
 ## fi # TEMP
 
+### NOTE: permissions should be tightened up later - this is for the initial wordpress setup
 echo -n "Now setting permissions on directory $DIR (could take a while) ... "
 cd $DIR
 #chown www-data:www-data -R * # Let Apache be owner
