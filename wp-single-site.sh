@@ -68,6 +68,7 @@ while [ -z $APACHE_LOG_DIR ]; do
     #[ -z "$apache_log" -o ! -d "$apache_log" ] && { echo "invalid entry"; continue; }
     [ -z "$apache_log" ] && { echo "Invalid entry"; continue; }
     [ -d "$apache_log" ] || { echo "Directory does not exist"; continue; }
+    echo "Setting APACHE_LOG_DIR=$apache_log"
     APACHE_LOG_DIR="$apache_log"
 done
 
