@@ -3,7 +3,6 @@
 # Script to set up a single Wordpress installation based on specified domain
 #
 URL="https://raw.githubusercontent.com/marcg1968/devops/master/wp-single-site.sh"
-URL="https://raw.githubusercontent.com/marcg1968/devops/dev-01/wp-single-site.sh"
 # run the script by entering
 # curl -s "$URL" | bash
 # OR
