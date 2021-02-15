@@ -91,7 +91,7 @@ while [ -z "$DOMAIN" ]; do
         echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
         exit 8
     fi
-    [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; exit 16; }
+    [ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined. Is the domain correct?"; continue; }
 
     echo KNOWN_IP $KNOWN_IP
     echo "Using domain '"$domain"'"
