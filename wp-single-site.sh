@@ -59,7 +59,7 @@ done
 
 echo $USR
 MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
-echo ${MYSQL_PW_FILE}
+#echo ${MYSQL_PW_FILE}
 
 [ -e "${MYSQL_PW_FILE}" ] || {
     echo ;
