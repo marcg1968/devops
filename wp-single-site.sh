@@ -43,7 +43,7 @@ while [ -z "$USR" ]; do
 done
 
 echo $USR
-MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root___"
+MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
 echo ${MYSQL_PW_FILE}
 
 [ -e "${MYSQL_PW_FILE}" ] || {
@@ -59,8 +59,13 @@ echo ${MYSQL_PW_FILE}
 
 read -p "Enter email address: "  EMAIL </dev/tty
 
-
 APACHE_LOG_DIR="/var/log/apache2"
+if [ ! -d $APACHE_LOG_DIR ]; then
+    read -p "Enter full path to Apache log directory: "  apache_log </dev/tty
+    apache_log="$(echo $apache_log | tr -d '[:space:]')"
+    [ -z "$apache_log" -o ! -d "$apache_log" ] && { echo "invalid entry"; continue; }
+fi
+
 
 
 
