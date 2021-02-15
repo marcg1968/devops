@@ -158,6 +158,18 @@ else
 	exit 128
 fi
 
+
+
+
+
+exit 0
+
+
+
+
+
+
+
 if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
 	if cd wordpress/ && mv * .. && cd .. && rmdir wordpress && cd .. ; then
 		echo "Wordpress unpacked to dir $DIR ."
