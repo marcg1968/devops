@@ -167,6 +167,7 @@ if cd "$DIR" && tar zxf ~/wordpress__latest.tar.gz; then
 	fi
 fi
 
+fi # TEMP
 
 echo -n "Now setting permissions (could take a while) ... "
 cd $DIR
@@ -176,8 +177,6 @@ find . -type d -exec sudo chmod 755 {} \;  # Change directory permissions rwxr-x
 find . -type f -exec sudo chmod 644 {} \;  # Change file permissions rw-r--r--
 
 echo Exit code now: $?
-
-fi # TEMP
 
 [[ $MYSQL_PWD ]] || { echo "MySQL password variable 'MYSQL_PWD' not set. "; exit 512; }
 
