@@ -86,8 +86,28 @@ DBNAME=$(echo ${DOMAIN%%.*} | tr -d -c '[[:alnum:]]')
 U=$DBNAME
 P="$DBNAME""pw"
 
-for i in `hostname -I`; do [[ $i =~ "127"* || $i =~ "::"* ]] && continue || { IP="$i"; break; }; done
-echo "IP: $IP"
+#for i in `hostname -I`; do [[ $i =~ "127"* || $i =~ "::"* ]] && continue || { IP="$i"; break; }; done
+#echo "IP: $IP"
+
+# checking IP domain name resolution
+KNOWN_IP=""
+if which getent >/dev/null; then
+	KNOWN_IP=$(getent hosts $DOMAIN | awk '{ print $1 ; exit }')
+elif which dig >/dev/null; then
+    KNOWN_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
+else
+    echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
+    exit 8
+fi
+[ -z "$KNOWN_IP" ] && { echo "IP for this domain could not be determined."; exit 16; }
+
+for i in `hostname -I`; do 
+    [[ $i =~ "127"* || $i =~ "::"* ]] && continue
+    # try this IP
+    [ "$i" = "$KNOWN_IP" ] && IP="$i"
+done
+
+echo "External IP determined to be $IP"
 
 echo -n "Checking if domain $DOMAIN resolves to this host's IP $IP ..."
 _IP=""
