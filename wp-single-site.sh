@@ -9,7 +9,7 @@ URL="https://raw.githubusercontent.com/marcg1968/devops/dev-01/wp-single-site.sh
 # OR
 # wget -qO - "$URL" | bash
 
-main() {
+checkroot() {
     if [ "$(id -u)" -eq 0 ]; then
         # user is root and good to go
 	echo "User has root privilege"
@@ -31,10 +31,28 @@ main() {
     fi	
 }
 
-main
+checkroot
+
+USR=""
+while [ -z "$USR" ]; do
+    read -p "Enter the main user (not root): "  username </dev/tty
+    username="$(echo $username | tr -d '[:space:]')"
+	[ -z "$username" ] && { echo must be non-zero; continue; }
+
+    USR="$username"
+done
+
+MYSQL_PW_FILE="${USR}/.pw_mysql_root"
+[ -e "${MYSQL_PW_FILE}" ] || {
+    echo "# Please create a password file\ntouch ${MYSQL_PW_FILE}\nchmod 400 ${MYSQL_PW_FILE}\n# with a single line containing the MySQL root password."
+    exit 2;
+}
 
 
-read -p "Enter the main user (not root): "  username </dev/tty
+read -p "Enter email address: "  EMAIL </dev/tty
+
+
+APACHE_LOG_DIR="/var/log/apache2"
 
 
 
