@@ -85,7 +85,7 @@ while [ -z "$DOMAIN" ]; do
         [[ "$KNOWN_IP" =~ "127"* ]] && KNOWN_IP=""
     fi
     if which dig >/dev/null && [ -z $KNOWN_IP ] ; then
-        KNOWN_IP=$(dig +short $DOMAIN | awk '{ print ; exit }')
+        KNOWN_IP=$(dig +short $DOMAIN)
     else
         echo -e "\nNeither 'dig' nor 'getent' available on this system. Exiting." 
         exit 8
