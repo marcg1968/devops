@@ -115,11 +115,11 @@ IP=""
 for i in `hostname -I`; do 
     [[ $i =~ "127"* || $i =~ "::"* ]] && continue
     # try this IP
-    echo "External IP determined to be $i ... "
+    echo "trying external IP $i ... "
     [ "$i" = "$KNOWN_IP" ] && IP="$i"
 done
 
-[ -z "$IP" ] && { echo "Mismatch between our external IP and IP of the domain. Exiting."; exit 64; }
+[ -z "$IP" ] && { echo "No external IP matches IP of the domain. Exiting."; exit 64; }
 
 
 
