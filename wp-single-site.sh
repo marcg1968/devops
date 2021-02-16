@@ -292,7 +292,7 @@ else
 	fi
 fi
 sleep 1
-echo "Should be good to go!"
+echo "NOTE: now the database needs to be imported and WP configuration complete."
 echo 
 echo "Try accessing new WP site at https://"$DOMAIN
 echo 
