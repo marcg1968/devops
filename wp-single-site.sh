@@ -55,12 +55,13 @@ while [ -z "$USR" ]; do
     USR="$username"
 done
 
-echo "Welcome, "$USR
+echo "Welcome, ${USR}. Now for a few checks and prompts ..."
 MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
 #echo ${MYSQL_PW_FILE}
 
 [ -e "${MYSQL_PW_FILE}" ] || {
     echo ;
+    echo "For this script to access the MySQL database, you need to create a secure password file in your home directory.";
     echo "# Please create a password file as follows:";
     echo "touch ${MYSQL_PW_FILE}";
     echo "chmod 400 ${MYSQL_PW_FILE}";
@@ -70,8 +71,12 @@ MYSQL_PW_FILE="/home/"${USR}"/.pw_mysql_root"
 }
 MYSQL_PWD=$(<${MYSQL_PW_FILE})
 
-read -p "Enter email address: "  EMAIL </dev/tty
+sleep 1
+echo 
+echo "A valid email address is required for the LetsEncrypt SSL certificate."
+read -p "Please enter email address: "  EMAIL </dev/tty
 
+sleep1
 APACHE_LOG_DIR="/var/log/apache2"
 [ -d $APACHE_LOG_DIR ] || APACHE_LOG_DIR=""
 
@@ -86,11 +91,13 @@ while [ -z $APACHE_LOG_DIR ]; do
 done
 
 DOMAIN=""
+echo
 while [ -z "$DOMAIN" ]; do
     read -p "Enter domain: " domain </dev/tty
     domain="$(echo $domain | tr -d '[:space:]')"
 	[ -z "$domain" ] && { echo must be of non-zero length; continue; }
     
+    sleep 1
     # checking IP domain name resolution
     KNOWN_IP=""
     if which getent >/dev/null; then
@@ -128,6 +135,8 @@ P=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
 
 ## Doing install
 
+echo
+sleep 1
 echo -n "Now installing Wordpress ... "
 cd ~
 
@@ -164,7 +173,9 @@ cd wordpress/ || exit 128
 mv * .. || exit 128
 cd .. || exit 128
 rmdir wordpress || exit 128
-cd .. && echo "Wordpress unpacked to dir $DIR ." || exit 128
+cd .. && echo -e "Unpacked Wordpress installation moved to dir\n\t $DIR" || exit 128
+echo
+sleep 1
 
 ## fi # TEMP
 
@@ -176,11 +187,14 @@ chown www-data:www-data -R . # Let Apache be owner
 find . -type d -exec sudo chmod 755 {} \;  # Change directory permissions rwxr-xr-x
 find . -type f -exec sudo chmod 644 {} \;  # Change file permissions rw-r--r--
 
-echo Exit code now: $?
+echo "Exit code now: "$?
+echo "(0 - indicates success)"
+echo 
+sleep 1
 
 [[ $MYSQL_PWD ]] || { echo "MySQL password variable 'MYSQL_PWD' not set. "; exit 512; }
 
-echo -n "Now setting up DB $DBNAME ... "
+echo -n "Now setting up MySQL DB $DBNAME ... "
 echo -n "with USERNAME $U ... "
 
 #mysql -uroot -p${MYSQL_ROOT_PW} -e "CREATE DATABASE ${DBNAME};"
@@ -195,13 +209,14 @@ MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "FLUSH PRIVILEGES;"
 MYSQL_PWD=$MYSQL_PWD mysql -uroot -e "ALTER DATABASE ${DBNAME} CHARACTER SET utf8 COLLATE utf8_unicode_ci;" # ensure utf8 charset
 
 echo "done."
+echo
 echo "+---------------------------------------------------------------------------------------+"
 echo -e "For DB $DBNAME\nUSER=${U}\nPASSWORD=${P}" >> ~/.wordpress_db_credentials_${DBNAME}
 sudo chown $USR ~/.wordpress_db_credentials_${DBNAME}
 sudo chmod 400 ~/.wordpress_db_credentials_${DBNAME}
 echo "   Credentials saved to file ${HOME}/.wordpress_db_credentials_${DBNAME}"
 echo "+---------------------------------------------------------------------------------------+"
-
+echo 
 
 if mv wp-config-sample.php wp-config.php; then
 	sed -i "s/database_name_here/${DBNAME}/g" wp-config.php
@@ -209,7 +224,7 @@ if mv wp-config-sample.php wp-config.php; then
 	sed -i "s/password_here/${P}/g" wp-config.php
 
 	if ! egrep -q "define.+'FORCE_SSL_ADMIN'.+true" wp-config.php ; then
-		echo -n "Forcing SSL for admin ... "
+		echo -n "Forcing SSL for admin in WP config ... "
 		echo "define('FORCE_SSL_ADMIN', true);" >> wp-config.php && echo "done."
 	fi
 
@@ -217,8 +232,8 @@ else
 	echo "Error creating wp-config.php. Exiting."
 	exit 64
 fi
-
-###fi # TEMP
+echo 
+sleep 1
 
 #F="/etc/apache2/sites-available/05-${DOMAIN}.conf"
 SITE="05-${DOMAIN}.conf"
@@ -255,7 +270,10 @@ EOF
 	echo "${CONF}" | tee -a "$F"
 	a2ensite "$SITE"
 fi
+echo 
+sleep 1
 
+echo "Setting up LetsEncrypt SSL certificates ..."
 # SSL
 if certbot certificates 2>/dev/null | egrep -q 'Domains:.*'${DOMAIN}; then 
 	echo "SSL certificate for $DOMAIN already exists."
@@ -267,11 +285,17 @@ else
 	#certbot certonly -n --agree-tos --no-eff-email --email $EMAIL --redirect -d $DOMAIN --apache
 	#if certbot -n --agree-tos --no-eff-email --email $EMAIL --redirect -d $DOMAIN --apache; then
 	if certbot -n --agree-tos --no-eff-email --email $EMAIL --no-redirect -d $DOMAIN --apache; then
+		echo 
+		echo -n "Now gracefully reloading Apache ... "
 		service apache2 graceful
+		echo 
 	fi
 fi
-
+sleep 1
+echo "Should be good to go!"
+echo 
 echo "Try accessing new WP site at https://"$DOMAIN
+echo 
 
 exit 0
 
