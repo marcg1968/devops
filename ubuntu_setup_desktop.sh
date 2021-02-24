@@ -56,12 +56,16 @@ while [ -z "$USR" ]; do
 	[ -z "$username" ] && { echo must be non-zero; continue; }
 	
 	#id -u "$username" 2>/dev/null && { echo "NOTE: $username already exists (id="$(id -u)")"; continue; }
-	id -u "$username" 2>/dev/null && { echo "NOTE: $username already exists (id="$(id -u)")"; }
+	id -u "$username" 2>/dev/null && { USR_EXISTS=1; echo "NOTE: $username already exists (id="$(id -u). Good to go!")"; }
 	#[ -z "$username" ] && { echo "try again ..."; continue; }
 	USR="$username"
 	
 	[ -z "$USR" ] && break
-	read -p "Now a standard password: " pw </dev/tty
+	[ "$USR_EXISTS" == 1 ] && break
+	
+	#PW_CHECK=""
+	#while [ -z "$PW_CHECK" ]; do
+	read -p -s "Now a standard password: " pw </dev/tty
 	STD_P=$(echo $pw | openssl passwd -6 -stdin)
 	pw=""
 done
