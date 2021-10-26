@@ -41,6 +41,20 @@ main() {
 	
 }
 
+install_postfix() {
+	POSTFIX_HOSTNAME=""
+	while [ -z "$POSTFIX_HOSTNAME" ]; do
+		# prompt for user input - NB </dev/tty
+		read -p "Enter the postfix hostname: " name </dev/tty
+		name="$(echo $name | tr -d '[:space:]')"
+		[ -z "$name" ] && { echo must be non-zero; continue; }
+		POSTFIX_HOSTNAME="$name"
+	done
+	echo "postfix postfix/mailname string $POSTFIX_HOSTNAME" | debconf-set-selections
+	echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
+	apt install -y postfix
+}
+
 os_check && echo "OS detected: ${detected_os} / ${detected_os_like} - will proceed" || { echo "Needs to be Ubuntu"; exit 1; }
 
 main
@@ -117,18 +131,18 @@ fi
 
 # apt packages
 
-# install postfix
-POSTFIX_HOSTNAME=""
-while [ -z "$POSTFIX_HOSTNAME" ]; do
-	# prompt for user input - NB </dev/tty
-	read -p "Enter the postfix hostname: " name </dev/tty
-	name="$(echo $name | tr -d '[:space:]')"
-	[ -z "$name" ] && { echo must be non-zero; continue; }
-	POSTFIX_HOSTNAME="$name"
-done
-echo "postfix postfix/mailname string $POSTFIX_HOSTNAME" | debconf-set-selections
-echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
-apt install -y postfix
+### install postfix
+##POSTFIX_HOSTNAME=""
+##while [ -z "$POSTFIX_HOSTNAME" ]; do
+##	# prompt for user input - NB </dev/tty
+##	read -p "Enter the postfix hostname: " name </dev/tty
+##	name="$(echo $name | tr -d '[:space:]')"
+##	[ -z "$name" ] && { echo must be non-zero; continue; }
+##	POSTFIX_HOSTNAME="$name"
+##done
+#echo "postfix postfix/mailname string $POSTFIX_HOSTNAME" | debconf-set-selections
+#echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
+#apt install -y postfix
 
 # std apt packages
 read -r -d '' LIST <<'EOF'
