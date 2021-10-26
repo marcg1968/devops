@@ -41,7 +41,7 @@ main() {
 	
 }
 
-os_check && echo "OS detected: ${detected_os_like} ${detected_os_like} - will proceed" || { echo "Needs to be Ubuntu"; exit 1; }
+os_check && echo "OS detected: ${detected_os} / ${detected_os_like} - will proceed" || { echo "Needs to be Ubuntu"; exit 1; }
 
 main
 
